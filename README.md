@@ -33,7 +33,7 @@ Landing page profesional de **REMEG — Rebobinado de Motores Eléctricos de Gua
 | Área | Estado |
 |---|---|
 | Landing page (todas las secciones), diseño responsive, íconos, galería | ✅ Implementado y probado en local |
-| Política de privacidad | ⚠️ Borrador; **requiere revisión de REMEG y asesoría legal** antes de publicar |
+| Política de privacidad | ✅ Revisada y aprobada por REMEG (octubre de 2026) |
 | Formulario → `remeg2009@hotmail.com` | ⏳ Implementado; **falta desplegar en Netlify, configurar la notificación y hacer una prueba real de recepción** |
 | Analítica (Umami Cloud) | ⏳ Implementada; **falta crear la cuenta y pegar el ID** |
 | Dominio `remeg.com.gt` | ⏳ No registrado todavía |
@@ -46,8 +46,8 @@ Lista completa de tareas abiertas: [`docs/PENDIENTES.md`](docs/PENDIENTES.md).
 - **Conversión:** botones de *Solicitar cotización*, *Llamar* y *WhatsApp* (con mensaje inicial), barra de contacto fija en móvil y botón flotante de WhatsApp discreto en escritorio.
 - **Emergencias y horario diferenciados:** emergencias 24 h / 365 días, y taller todos los días de 7:00 a. m. a 5:00 p. m.
 - **Servicios:** rebobinado, mantenimiento preventivo y correctivo, medición de aislamiento con Megger, reparaciones mecánicas, recolección y entrega (como parte de la cotización).
-- **Galería "Nuestro taller":** fotografías propias optimizadas (WebP), con pies descriptivos y visor accesible por teclado.
-- **Proceso de trabajo** en 6 pasos con detalle al pasar el cursor o enfocar con teclado (siempre visible en pantallas táctiles).
+- **Carrusel de rebobinado** (7 fotos, dentro de *Servicios*) y **galería «Nuestro taller»** (11 fotos; se muestran 8 y el resto con *Ver todas las fotos*). Fotografías propias en WebP, con pies descriptivos y visor accesible por teclado. Sin reproducción automática.
+- **Proceso de trabajo** en 6 pasos (incluye pruebas en vacío con el motor energizado antes de la entrega), con detalle al pasar el cursor o enfocar con teclado; siempre visible en pantallas táctiles.
 - **Formulario** con 8 campos (4 obligatorios: nombre, teléfono, servicio y descripción), validación en el cliente, estados de carga y error sin perder datos, y protección contra spam por campo trampa.
 - **SEO local:** metadatos, Open Graph, datos estructurados `LocalBusiness` con dirección, teléfonos, horario del taller y coordenadas confirmadas, `sitemap.xml` y `robots.txt`.
 - **Analítica respetuosa con la privacidad:** Umami Cloud, sin cookies, sin datos personales en los eventos.
@@ -79,7 +79,9 @@ Lista completa de tareas abiertas: [`docs/PENDIENTES.md`](docs/PENDIENTES.md).
 │       ├── app.js             # Menú, galería, formulario, analítica
 │       ├── logo.png           # Logotipo original de REMEG
 │       ├── favicon.png
-│       └── foto*.webp         # Fotografías optimizadas
+│       ├── hero-motor-instalado.webp
+│       ├── rebobinado-01…07.webp   # Carrusel de rebobinado
+│       └── taller-01…11.webp       # Galería «Nuestro taller»
 ├── docs/                      # Guías y pendientes
 ├── tests/                     # Pruebas automatizadas (Playwright + axe)
 ├── tools/optimize_images.py   # Convierte fotos a WebP para la web
@@ -164,8 +166,8 @@ Resultados **medidos** en laboratorio (Chromium local, móvil simulado, sin comp
 | Medición | Resultado |
 |---|---|
 | axe-core (WCAG 2.0/2.1/2.2 A y AA + buenas prácticas) | 0 violaciones en 14 combinaciones de pantalla y tema |
-| Lighthouse 13.5 | Rendimiento 89 · Accesibilidad 100 · Buenas prácticas 100 · SEO 100 |
-| FCP / LCP / CLS / TBT | 0,9 s / **2,7 s** / 0 / 310 ms |
+| Lighthouse 13.5 | Rendimiento 91 · Accesibilidad 100 · Buenas prácticas 100 · SEO 100 |
+| FCP / LCP / CLS / TBT | 1,8 s / **2,7 s** / 0 / 170 ms |
 
 - El **LCP de laboratorio (2,7 s) supera el objetivo de 2,5 s**; hay que volver a medirlo en el sitio publicado. No son datos de usuarios reales.
 - Las herramientas automáticas **no demuestran** conformidad con WCAG 2.2 AA: falta revisión manual y con lector de pantalla.
@@ -175,7 +177,7 @@ Resultados **medidos** en laboratorio (Chromium local, móvil simulado, sin comp
 - Cabeceras de seguridad y CSP en `netlify.toml`; HTTPS gestionado por Netlify.
 - Sin cookies publicitarias ni píxeles de seguimiento. Los eventos de analítica no incluyen nombre, teléfono, correo ni descripciones.
 - El formulario recoge solo lo necesario; correo, empresa, potencia y voltaje son opcionales.
-- `site/privacidad.html` es un **borrador sin revisión legal**; los puntos a confirmar están al inicio del archivo.
+- `site/privacidad.html`: política revisada y aprobada por REMEG. Debe actualizarse si cambia el uso de los datos, los proveedores o la analítica.
 
 ## Mantenimiento: cómo editar el sitio
 
@@ -183,7 +185,7 @@ Resultados **medidos** en laboratorio (Chromium local, móvil simulado, sin comp
 |---|---|
 | Textos, teléfonos, horarios, preguntas frecuentes | `site/index.html` |
 | Colores, tipografía, espaciado | Variables en `site/assets/styles.css` (`:root`) |
-| Fotografías | Optimizar con `python3 tools/optimize_images.py foto.jpg`, copiar a `site/assets/` y actualizar `src`, `width`, `height`, `alt` y pie de foto |
+| Fotografías | Optimizar con `python3 tools/optimize_images.py foto.jpg`, copiar a `site/assets/` (nombres `rebobinado-NN`, `taller-NN`) y actualizar `src`, `width`, `height`, `alt` y pie de foto. Las nuevas del taller van al inicio de `#gal`; solo las 8 primeras se ven sin pulsar *Ver todas* |
 | Número o mensaje de WhatsApp | Buscar `wa.me/` en `site/index.html` |
 | Coordenadas del taller | Datos estructurados (JSON-LD) y enlaces de mapa en `site/index.html` |
 | Cuando se cambie el dominio | `canonical`, Open Graph, JSON-LD, `robots.txt` y `sitemap.xml` |
@@ -193,7 +195,7 @@ Después de cualquier cambio: ejecutar `python3 tests/e2e.py` y volver a despleg
 ## Hoja de ruta
 
 1. Registrar el dominio, conectar el sitio y comprobar el formulario real.
-2. Revisión legal de la política de privacidad.
+2. Revisar la política de privacidad cuando cambie el uso de datos o los proveedores.
 3. Medir Core Web Vitals en el sitio publicado y optimizar el LCP si hace falta.
 4. Revisión manual de accesibilidad (teclado, lector de pantalla, zoom 200 %).
 5. Alta del perfil de Google Business (requiere acceso de la empresa).
