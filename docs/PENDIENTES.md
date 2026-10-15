@@ -4,7 +4,8 @@
 - [ ] Comprobar disponibilidad y registrar `remeg.com.gt` en www.gt (USD 20/año, titular nacional).
 - [ ] Crear cuenta de Netlify a nombre de la empresa (con verificación en dos pasos).
 - [ ] Crear cuenta de Umami y pegar el *Website ID* en `site/index.html`.
-- [ ] Revisar y aprobar `site/privacidad.html` (plazo de conservación, trámite de consultas, usos y terceros) con asesoría legal.
+- [x] Política de privacidad revisada y aprobada por REMEG (octubre de 2026).
+- [ ] Confirmar que las personas que aparecen en las fotos `rebobinado-03` y `taller-05` autorizan su publicación.
 - [ ] Confirmar las condiciones de recolección y entrega para complementar el texto si se desea.
 - [ ] Autorizar el uso de las fotografías publicadas.
 - [ ] Decidir si se crea el perfil de Google Business Profile (requiere acceso de la empresa).

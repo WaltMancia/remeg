@@ -66,7 +66,21 @@ def main():
             ok("el envío incluye los 8 campos y form-name", sent and all(k in sent[0] for k in ["form-name=cotizacion", "nombre=", "telefono=", "correo=", "servicio=", "descripcion=", "potencia=", "voltaje=", "empresa="]))
 
             # Galería, proceso, botón flotante
-            pg.click("#gal figure >> nth=2 >> button"); ok("visor de galería con pie descriptivo", "Medición de aislamiento" in pg.inner_text("#lc")); pg.keyboard.press("Escape")
+            # Galería "Nuestro taller": 11 fotos, 8 visibles, el resto con "Ver todas"
+            ok("galería: 11 fotos y solo 8 visibles al inicio", pg.evaluate("document.querySelectorAll('#gal figure').length")==11 and pg.evaluate("document.querySelectorAll('#gal figure:not([hidden])').length")==8)
+            ok("galería: las fotos nuevas van primero", pg.evaluate("document.querySelector('#gal img').getAttribute('src')")=="assets/taller-01.webp")
+            pg.click("#gal figure >> nth=0 >> button"); ok("visor de galería con pie descriptivo", "Motor en maniobra con cadena" in pg.inner_text("#lc") and "1 de 11" in pg.inner_text("#lc"), pg.inner_text("#lc")); pg.keyboard.press("Escape")
+            pg.click("#gm"); ok("«Ver todas»: muestra las 11 y marca aria-expanded", pg.evaluate("document.querySelectorAll('#gal figure:not([hidden])').length")==11 and pg.get_attribute("#gm","aria-expanded")=="true")
+            pg.click("#gm"); ok("«Ver menos»: vuelve a 8", pg.evaluate("document.querySelectorAll('#gal figure:not([hidden])').length")==8)
+            # Carrusel de rebobinado
+            ok("carrusel: 7 fotos de rebobinado con región accesible", pg.evaluate("document.querySelectorAll('.car .track figure').length")==7 and pg.get_attribute(".car","role")=="region")
+            ok("carrusel: botón anterior desactivado al inicio", pg.get_attribute(".cp","aria-disabled")=="true")
+            pg.locator(".car").scroll_into_view_if_needed(); pg.click(".cn"); pg.wait_for_timeout(900)
+            ok("carrusel: «siguiente» desplaza las fotos", pg.evaluate("document.querySelector('.track').scrollLeft")>50 and pg.get_attribute(".cp","aria-disabled")=="false")
+            pg.click(".car .track figure >> nth=0 >> button"); ok("visor del carrusel (1 de 7)", "1 de 7" in pg.inner_text("#lc"), pg.inner_text("#lc")); pg.keyboard.press("Escape")
+            # Contenido solicitado por el cliente
+            ok("paso 5: pruebas en vacío con el motor energizado", "Se energiza el motor para realizar pruebas en vacío antes de su entrega." in pg.inner_text("#steps"))
+            ok("hero con la foto nueva", pg.evaluate("document.querySelector('.hero img').getAttribute('src')")=="assets/hero-motor-instalado.webp")
             d = b.new_page(viewport={"width": 1280, "height": 800}); d.goto(U)
             ok("botón flotante de WhatsApp oculto arriba", not d.is_visible("#waf"))
             d.mouse.wheel(0, 1500); d.wait_for_timeout(600); ok("botón flotante aparece al desplazarse", d.is_visible("#waf"))
