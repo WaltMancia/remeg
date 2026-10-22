@@ -46,7 +46,7 @@ Lista completa de tareas abiertas: [`docs/PENDIENTES.md`](docs/PENDIENTES.md).
 - **Conversión:** botones de *Solicitar cotización*, *Llamar* y *WhatsApp* (con mensaje inicial), barra de contacto fija en móvil y botón flotante de WhatsApp discreto en escritorio.
 - **Emergencias y horario diferenciados:** emergencias 24 h / 365 días, y taller todos los días de 7:00 a. m. a 5:00 p. m.
 - **Servicios:** rebobinado, mantenimiento preventivo y correctivo, medición de aislamiento con Megger, reparaciones mecánicas, recolección y entrega (como parte de la cotización).
-- **Carrusel de rebobinado** (7 fotos, dentro de *Servicios*) y **galería «Nuestro taller»** (11 fotos; se muestran 8 y el resto con *Ver todas las fotos*). Fotografías propias en WebP, con pies descriptivos y visor accesible por teclado. Sin reproducción automática.
+- **Carrusel de rebobinado** (7 fotos, dentro de *Servicios*) y **galería «Nuestro taller»**. Se muestran hasta 8 fotos; si hay más, el botón *Ver todas las fotos* indica el total de fotos renderizadas. Fotografías propias en WebP, con pies descriptivos y visor accesible por teclado. Sin reproducción automática.
 - **Proceso de trabajo** en 6 pasos (incluye pruebas en vacío con el motor energizado antes de la entrega), con detalle al pasar el cursor o enfocar con teclado; siempre visible en pantallas táctiles.
 - **Formulario** con 8 campos (4 obligatorios: nombre, teléfono, servicio y descripción), validación en el cliente, estados de carga y error sin perder datos, y protección contra spam por campo trampa.
 - **SEO local:** metadatos, Open Graph, datos estructurados `LocalBusiness` con dirección, teléfonos, horario del taller y coordenadas confirmadas, `sitemap.xml` y `robots.txt`.
