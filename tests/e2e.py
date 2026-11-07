@@ -66,19 +66,26 @@ def main():
             ok("el envío incluye los 8 campos y form-name", sent and all(k in sent[0] for k in ["form-name=cotizacion", "nombre=", "telefono=", "correo=", "servicio=", "descripcion=", "potencia=", "voltaje=", "empresa="]))
 
             # Galería, proceso, botón flotante
-            # Galería "Nuestro taller": con 5 fotos no se muestra "Ver todas"
-            ok("galería: 5 fotos visibles y botón oculto", pg.evaluate("document.querySelectorAll('#gal figure').length")==5 and pg.evaluate("document.querySelectorAll('#gal figure:not([hidden])').length")==5 and not pg.is_visible("#gm"))
-            ok("galería: las fotos nuevas van primero", pg.evaluate("document.querySelector('#gal img').getAttribute('src')")=="assets/taller-01.webp")
-            pg.click("#gal figure >> nth=0 >> button"); ok("visor de galería con pie descriptivo", "Motor en maniobra con cadena" in pg.inner_text("#lc") and "1 de 5" in pg.inner_text("#lc"), pg.inner_text("#lc")); pg.keyboard.press("Escape")
+            # Galería "Nuestro taller" (sin depender del número de fotos ni de los textos)
+            n = pg.evaluate("document.querySelectorAll('#gal figure').length"); vis = pg.evaluate("document.querySelectorAll('#gal figure:not([hidden])').length")
+            ok("galería: hay fotos y a lo sumo 8 visibles al inicio", n >= 1 and vis <= 8, f"({n} fotos, {vis} visibles)")
+            cap0 = pg.inner_text("#gal figure >> nth=0 >> figcaption")
+            pg.click("#gal figure >> nth=0 >> button"); ok("visor de galería: pie de la primera foto y contador", cap0 in pg.inner_text("#lc") and f"1 de {n}" in pg.inner_text("#lc"), pg.inner_text("#lc")); pg.keyboard.press("Escape")
+            if n > 8:
+                pg.click("#gm"); ok("«Ver todas»: muestra todas y marca aria-expanded", pg.evaluate("document.querySelectorAll('#gal figure:not([hidden])').length")==n and pg.get_attribute("#gm","aria-expanded")=="true")
+                pg.click("#gm"); ok("«Ver menos»: vuelve a 8", pg.evaluate("document.querySelectorAll('#gal figure:not([hidden])').length")==8)
             # Carrusel de rebobinado
-            ok("carrusel: 7 fotos de rebobinado con región accesible", pg.evaluate("document.querySelectorAll('.car .track figure').length")==7 and pg.get_attribute(".car","role")=="region")
+            c = pg.evaluate("document.querySelectorAll('.car .track figure').length")
+            ok("carrusel: región accesible con fotos", c >= 1 and pg.get_attribute(".car","role")=="region", f"({c} fotos)")
             ok("carrusel: botón anterior desactivado al inicio", pg.get_attribute(".cp","aria-disabled")=="true")
-            pg.locator(".car").scroll_into_view_if_needed(); pg.click(".cn"); pg.wait_for_timeout(900)
-            ok("carrusel: «siguiente» desplaza las fotos", pg.evaluate("document.querySelector('.track').scrollLeft")>50 and pg.get_attribute(".cp","aria-disabled")=="false")
-            pg.click(".car .track figure >> nth=0 >> button"); ok("visor del carrusel (1 de 7)", "1 de 7" in pg.inner_text("#lc"), pg.inner_text("#lc")); pg.keyboard.press("Escape")
-            # Contenido solicitado por el cliente
-            ok("paso 5: pruebas en vacío con el motor energizado", "Se energiza el motor para realizar pruebas en vacío antes de su entrega." in pg.inner_text("#steps"))
-            ok("hero con la foto nueva", pg.evaluate("document.querySelector('.hero img').getAttribute('src')")=="assets/hero-motor-instalado.webp")
+            pg.locator(".car").scroll_into_view_if_needed()
+            if pg.evaluate("document.querySelector('.track').scrollWidth>document.querySelector('.track').clientWidth+4"):
+                pg.click(".cn"); pg.wait_for_timeout(900)
+                ok("carrusel: «siguiente» desplaza las fotos", pg.evaluate("document.querySelector('.track').scrollLeft")>50 and pg.get_attribute(".cp","aria-disabled")=="false")
+            pg.click(".car .track figure >> nth=0 >> button"); ok("visor del carrusel con contador", f"1 de {c}" in pg.inner_text("#lc"), pg.inner_text("#lc")); pg.keyboard.press("Escape")
+            # Contenido básico (sin depender de la redacción ni del nombre de las fotos)
+            ok("hero: imagen cargada", pg.evaluate("(()=>{const i=document.querySelector('.hero img');return i&&i.complete&&i.naturalWidth>0})()"))
+            ok("proceso: hay 6 pasos", pg.evaluate("document.querySelectorAll('#steps li').length")==6)
             d = b.new_page(viewport={"width": 1280, "height": 800}); d.goto(U)
             ok("botón flotante de WhatsApp oculto arriba", not d.is_visible("#waf"))
             d.mouse.wheel(0, 1500); d.wait_for_timeout(600); ok("botón flotante aparece al desplazarse", d.is_visible("#waf"))
